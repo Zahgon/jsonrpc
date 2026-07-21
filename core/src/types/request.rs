@@ -1,83 +1,66 @@
-//! jsonrpc request
 
 use super::{Id, Params, Version};
 
-/// Represents jsonrpc request which is a method call.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MethodCall {
-	/// A String specifying the version of the JSON-RPC protocol.
+	
 	pub jsonrpc: Option<Version>,
-	/// A String containing the name of the method to be invoked.
+	
 	pub method: String,
-	/// A Structured value that holds the parameter values to be used
-	/// during the invocation of the method. This member MAY be omitted.
+	
 	#[serde(default = "default_params")]
 	pub params: Params,
-	/// An identifier established by the Client that MUST contain a String,
-	/// Number, or NULL value if included. If it is not included it is assumed
-	/// to be a notification.
+	
 	pub id: Id,
 }
 
-/// Represents jsonrpc request which is a notification.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Notification {
-	/// A String specifying the version of the JSON-RPC protocol.
+	
 	pub jsonrpc: Option<Version>,
-	/// A String containing the name of the method to be invoked.
+	
 	pub method: String,
-	/// A Structured value that holds the parameter values to be used
-	/// during the invocation of the method. This member MAY be omitted.
+	
 	#[serde(default = "default_params")]
 	pub params: Params,
 }
 
-/// Represents single jsonrpc call.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum Call {
-	/// Call method
+	
 	MethodCall(MethodCall),
-	/// Fire notification
+	
 	Notification(Notification),
-	/// Invalid call
+	
 	Invalid {
-		/// Call id (if known)
+		
 		#[serde(default = "default_id")]
 		id: Id,
 	},
 }
 
-fn default_params() -> Params {
-	Params::None
-}
+fn default_params() -> Params { panic!("STUB: not implemented") }
 
-fn default_id() -> Id {
-	Id::Null
-}
+fn default_id() -> Id { panic!("STUB: not implemented") }
 
 impl From<MethodCall> for Call {
-	fn from(mc: MethodCall) -> Self {
-		Call::MethodCall(mc)
-	}
+	fn from(mc: MethodCall) -> Self { panic!("STUB: not implemented") }
 }
 
 impl From<Notification> for Call {
-	fn from(n: Notification) -> Self {
-		Call::Notification(n)
-	}
+	fn from(n: Notification) -> Self { panic!("STUB: not implemented") }
 }
 
-/// Represents jsonrpc request.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 #[serde(untagged)]
 pub enum Request {
-	/// Single request (call)
+	
 	Single(Call),
-	/// Batch of requests (calls)
+	
 	Batch(Vec<Call>),
 }
 

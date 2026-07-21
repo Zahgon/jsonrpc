@@ -1,15 +1,13 @@
-//! jsonrpc id field
 
-/// Request Id
 #[derive(Debug, PartialEq, Clone, Hash, Eq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 #[serde(untagged)]
 pub enum Id {
-	/// No id (notification)
+	
 	Null,
-	/// Numeric id
+	
 	Num(u64),
-	/// String id
+	
 	Str(String),
 }
 

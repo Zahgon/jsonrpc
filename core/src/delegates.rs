@@ -1,4 +1,3 @@
-//! Delegate rpc calls
 
 use std::collections::HashMap;
 use std::future::Future;
@@ -21,10 +20,7 @@ where
 	T: Send + Sync + 'static,
 	F: Send + Sync + 'static,
 {
-	fn call(&self, params: Params, _meta: M) -> BoxFuture<crate::Result<Value>> {
-		let closure = &self.closure;
-		Box::pin(closure(&self.delegate, params))
-	}
+	fn call(&self, params: Params, _meta: M) -> BoxFuture<crate::Result<Value>> { panic!("STUB: not implemented") }
 }
 
 struct DelegateMethodWithMeta<T, F> {
@@ -40,10 +36,7 @@ where
 	T: Send + Sync + 'static,
 	F: Send + Sync + 'static,
 {
-	fn call(&self, params: Params, meta: M) -> BoxFuture<crate::Result<Value>> {
-		let closure = &self.closure;
-		Box::pin(closure(&self.delegate, params, meta))
-	}
+	fn call(&self, params: Params, meta: M) -> BoxFuture<crate::Result<Value>> { panic!("STUB: not implemented") }
 }
 
 struct DelegateNotification<T, F> {
@@ -58,10 +51,7 @@ where
 	F: Send + Sync + 'static,
 	T: Send + Sync + 'static,
 {
-	fn execute(&self, params: Params, _meta: M) {
-		let closure = &self.closure;
-		closure(&self.delegate, params)
-	}
+	fn execute(&self, params: Params, _meta: M) { panic!("STUB: not implemented") }
 }
 
 struct DelegateNotificationWithMeta<T, F> {
@@ -76,13 +66,9 @@ where
 	F: Send + Sync + 'static,
 	T: Send + Sync + 'static,
 {
-	fn execute(&self, params: Params, meta: M) {
-		let closure = &self.closure;
-		closure(&self.delegate, params, meta)
-	}
+	fn execute(&self, params: Params, meta: M) { panic!("STUB: not implemented") }
 }
 
-/// A set of RPC methods and notifications tied to single `delegate` struct.
 pub struct IoDelegate<T, M = ()>
 where
 	T: Send + Sync + 'static,
@@ -97,81 +83,36 @@ where
 	T: Send + Sync + 'static,
 	M: Metadata,
 {
-	/// Creates new `IoDelegate`
-	pub fn new(delegate: Arc<T>) -> Self {
-		IoDelegate {
-			delegate,
-			methods: HashMap::new(),
-		}
-	}
+	
+	pub fn new(delegate: Arc<T>) -> Self { panic!("STUB: not implemented") }
 
-	/// Adds an alias to existing method.
-	/// NOTE: Aliases are not transitive, i.e. you cannot create alias to an alias.
-	pub fn add_alias(&mut self, from: &str, to: &str) {
-		self.methods.insert(from.into(), RemoteProcedure::Alias(to.into()));
-	}
+	pub fn add_alias(&mut self, from: &str, to: &str) { panic!("STUB: not implemented") }
 
-	/// Adds async method to the delegate.
 	pub fn add_method<F, I>(&mut self, name: &str, method: F)
 	where
 		F: Fn(&T, Params) -> I,
 		I: Future<Output = Result<Value, Error>> + Send + 'static,
 		F: Send + Sync + 'static,
-	{
-		self.methods.insert(
-			name.into(),
-			RemoteProcedure::Method(Arc::new(DelegateAsyncMethod {
-				delegate: self.delegate.clone(),
-				closure: method,
-			})),
-		);
-	}
+	{ panic!("STUB: not implemented") }
 
-	/// Adds async method with metadata to the delegate.
 	pub fn add_method_with_meta<F, I>(&mut self, name: &str, method: F)
 	where
 		F: Fn(&T, Params, M) -> I,
 		I: Future<Output = Result<Value, Error>> + Send + 'static,
 		F: Send + Sync + 'static,
-	{
-		self.methods.insert(
-			name.into(),
-			RemoteProcedure::Method(Arc::new(DelegateMethodWithMeta {
-				delegate: self.delegate.clone(),
-				closure: method,
-			})),
-		);
-	}
+	{ panic!("STUB: not implemented") }
 
-	/// Adds notification to the delegate.
 	pub fn add_notification<F>(&mut self, name: &str, notification: F)
 	where
 		F: Fn(&T, Params),
 		F: Send + Sync + 'static,
-	{
-		self.methods.insert(
-			name.into(),
-			RemoteProcedure::Notification(Arc::new(DelegateNotification {
-				delegate: self.delegate.clone(),
-				closure: notification,
-			})),
-		);
-	}
+	{ panic!("STUB: not implemented") }
 
-	/// Adds notification with metadata to the delegate.
 	pub fn add_notification_with_meta<F>(&mut self, name: &str, notification: F)
 	where
 		F: Fn(&T, Params, M),
 		F: Send + Sync + 'static,
-	{
-		self.methods.insert(
-			name.into(),
-			RemoteProcedure::Notification(Arc::new(DelegateNotificationWithMeta {
-				delegate: self.delegate.clone(),
-				closure: notification,
-			})),
-		);
-	}
+	{ panic!("STUB: not implemented") }
 }
 
 impl<T, M> crate::io::IoHandlerExtension<M> for IoDelegate<T, M>
@@ -179,9 +120,7 @@ where
 	T: Send + Sync + 'static,
 	M: Metadata,
 {
-	fn augment<S: crate::Middleware<M>>(self, handler: &mut crate::MetaIoHandler<M, S>) {
-		handler.extend_with(self.methods)
-	}
+	fn augment<S: crate::Middleware<M>>(self, handler: &mut crate::MetaIoHandler<M, S>) { panic!("STUB: not implemented") }
 }
 
 impl<T, M> IntoIterator for IoDelegate<T, M>
@@ -192,7 +131,5 @@ where
 	type Item = (String, RemoteProcedure<M>);
 	type IntoIter = std::collections::hash_map::IntoIter<String, RemoteProcedure<M>>;
 
-	fn into_iter(self) -> Self::IntoIter {
-		self.methods.into_iter()
-	}
+	fn into_iter(self) -> Self::IntoIter { panic!("STUB: not implemented") }
 }

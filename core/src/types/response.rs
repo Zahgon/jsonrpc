@@ -1,133 +1,80 @@
-//! jsonrpc response
+
 use super::{Error, ErrorCode, Id, Value, Version};
 use crate::Result as CoreResult;
 
-/// Successful response
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Success {
-	/// Protocol version
+	
 	#[serde(skip_serializing_if = "Option::is_none")]
 	pub jsonrpc: Option<Version>,
-	/// Result
+	
 	pub result: Value,
-	/// Correlation id
+	
 	pub id: Id,
 }
 
-/// Unsuccessful response
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Failure {
-	/// Protocol Version
+	
 	#[serde(skip_serializing_if = "Option::is_none")]
 	pub jsonrpc: Option<Version>,
-	/// Error
+	
 	pub error: Error,
-	/// Correlation id
+	
 	pub id: Id,
 }
 
-/// Represents output - failure or success
 #[derive(Debug, PartialEq, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 #[serde(untagged)]
 pub enum Output {
-	/// Success
+	
 	Success(Success),
-	/// Failure
+	
 	Failure(Failure),
 }
 
 impl Output {
-	/// Creates new output given `Result`, `Id` and `Version`.
-	pub fn from(result: CoreResult<Value>, id: Id, jsonrpc: Option<Version>) -> Self {
-		match result {
-			Ok(result) => Output::Success(Success { jsonrpc, result, id }),
-			Err(error) => Output::Failure(Failure { jsonrpc, error, id }),
-		}
-	}
+	
+	pub fn from(result: CoreResult<Value>, id: Id, jsonrpc: Option<Version>) -> Self { panic!("STUB: not implemented") }
 
-	/// Creates new failure output indicating malformed request.
-	pub fn invalid_request(id: Id, jsonrpc: Option<Version>) -> Self {
-		Output::Failure(Failure {
-			id,
-			jsonrpc,
-			error: Error::new(ErrorCode::InvalidRequest),
-		})
-	}
+	pub fn invalid_request(id: Id, jsonrpc: Option<Version>) -> Self { panic!("STUB: not implemented") }
 
-	/// Get the jsonrpc protocol version.
-	pub fn version(&self) -> Option<Version> {
-		match *self {
-			Output::Success(ref s) => s.jsonrpc,
-			Output::Failure(ref f) => f.jsonrpc,
-		}
-	}
+	pub fn version(&self) -> Option<Version> { panic!("STUB: not implemented") }
 
-	/// Get the correlation id.
-	pub fn id(&self) -> &Id {
-		match *self {
-			Output::Success(ref s) => &s.id,
-			Output::Failure(ref f) => &f.id,
-		}
-	}
+	pub fn id(&self) -> &Id { panic!("STUB: not implemented") }
 }
 
 impl From<Output> for CoreResult<Value> {
-	/// Convert into a result. Will be `Ok` if it is a `Success` and `Err` if `Failure`.
-	fn from(output: Output) -> CoreResult<Value> {
-		match output {
-			Output::Success(s) => Ok(s.result),
-			Output::Failure(f) => Err(f.error),
-		}
-	}
+	
+	fn from(output: Output) -> CoreResult<Value> { panic!("STUB: not implemented") }
 }
 
-/// Synchronous response
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 #[serde(untagged)]
 pub enum Response {
-	/// Single response
+	
 	Single(Output),
-	/// Response to batch request (batch of responses)
+	
 	Batch(Vec<Output>),
 }
 
 impl Response {
-	/// Creates new `Response` with given error and `Version`
-	pub fn from(error: Error, jsonrpc: Option<Version>) -> Self {
-		Failure {
-			id: Id::Null,
-			jsonrpc,
-			error,
-		}
-		.into()
-	}
+	
+	pub fn from(error: Error, jsonrpc: Option<Version>) -> Self { panic!("STUB: not implemented") }
 
-	/// Deserialize `Response` from given JSON string.
-	///
-	/// This method will handle an empty string as empty batch response.
-	pub fn from_json(s: &str) -> Result<Self, serde_json::Error> {
-		if s.is_empty() {
-			Ok(Response::Batch(vec![]))
-		} else {
-			crate::serde_from_str(s)
-		}
-	}
+	pub fn from_json(s: &str) -> Result<Self, serde_json::Error> { panic!("STUB: not implemented") }
 }
 
 impl From<Failure> for Response {
-	fn from(failure: Failure) -> Self {
-		Response::Single(Output::Failure(failure))
-	}
+	fn from(failure: Failure) -> Self { panic!("STUB: not implemented") }
 }
 
 impl From<Success> for Response {
-	fn from(success: Success) -> Self {
-		Response::Single(Output::Success(success))
-	}
+	fn from(success: Success) -> Self { panic!("STUB: not implemented") }
 }
 
 #[test]
